@@ -1,0 +1,30 @@
+FROM ubuntu:22.04
+
+RUN apt-get update
+RUN apt-get install -y python3-pip git wget lshw dmidecode sudo
+
+RUN mkdir /benchmarks
+WORKDIR /benchmarks
+
+COPY . /benchmarks
+
+RUN pip3 install click pyyaml tabulate pandas
+
+RUN python3 benchpress_cli.py install tao_bench_64g
+RUN python3 benchpress_cli.py run tao_bench_autoscale
+
+#[441/939] Building CXX object CMakeFiles/future_test.dir/folly/futures/test/FutureTest.cpp.o
+#ninja: build stopped: subcommand failed.
+#Command '['/usr/local/bin/cmake', '--build', '/benchmarks/benchmarks/tao_bench/build-folly/build/folly', '--target', 'install', '--config', 'RelWithDebInfo', '-j', '5']' returned non-zero exit status 1.
+#!! Failed
+#Traceback (most recent call last):
+#  File "/benchmarks/benchpress_cli.py", line 16, in <module>
+#    main()
+#  File "/benchmarks/benchpress/cli/main.py", line 354, in main
+#    args.command.run(args, bp.jobs)
+#  File "/benchmarks/benchpress/cli/commands/install.py", line 75, in run
+#    install_benchmark(job.install_script, env=env)
+#  File "/benchmarks/benchpress/lib/util.py", line 89, in install_benchmark
+#    raise Exception(f"Failed to run '{cmd_str}'")
+#Exception: Failed to run 'bash -x ./packages/tao_bench/install_tao_bench.sh'
+#root@96640f024cc3:/benchmarks#

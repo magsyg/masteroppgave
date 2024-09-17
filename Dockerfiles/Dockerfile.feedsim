@@ -1,0 +1,15 @@
+FROM ubuntu:22.04
+
+RUN apt-get update
+RUN apt-get install -y python3-pip git wget lshw dmidecode
+
+RUN mkdir /benchmarks
+WORKDIR /benchmarks
+
+COPY . /benchmarks
+
+RUN pip3 install click pyyaml tabulate pandas
+
+RUN python3 benchpress_cli.py install feedsim_autoscale
+RUN python3 benchpress_cli.py run feedsim_autoscale
+
